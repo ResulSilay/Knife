@@ -1,6 +1,10 @@
 Knife
 ===
 
+### Added features for the knife library
+- Gradle upgrade.
+- Text color.
+
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Knife-brightgreen.svg?style=flat-square)](http://android-arsenal.com/details/1/2924)
 
 Knife (extend EditText) is a rich text editor component for writing documents in Android.
