@@ -3,7 +3,6 @@ package io.github.mthli.knifedemo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeText;
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        knife = (KnifeText) findViewById(R.id.knife);
+        knife = findViewById(R.id.knife);
         // ImageGetter coming soon...
         knife.fromHtml(EXAMPLE);
         knife.setSelection(knife.getEditableText().length());
@@ -46,159 +46,96 @@ public class MainActivity extends Activity {
         setupBullet();
         setupQuote();
         setupLink();
+        setupTextColor();
         setupClear();
     }
 
     private void setupBold() {
-        ImageButton bold = (ImageButton) findViewById(R.id.bold);
+        ImageButton bold = findViewById(R.id.bold);
 
-        bold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.bold(!knife.contains(KnifeText.FORMAT_BOLD));
-            }
-        });
+        bold.setOnClickListener(v -> knife.bold(!knife.contains(KnifeText.FORMAT_BOLD)));
 
-        bold.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_bold, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        bold.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_bold, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupItalic() {
-        ImageButton italic = (ImageButton) findViewById(R.id.italic);
+        ImageButton italic = findViewById(R.id.italic);
 
-        italic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.italic(!knife.contains(KnifeText.FORMAT_ITALIC));
-            }
-        });
+        italic.setOnClickListener(v -> knife.italic(!knife.contains(KnifeText.FORMAT_ITALIC)));
 
-        italic.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_italic, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        italic.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_italic, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupUnderline() {
-        ImageButton underline = (ImageButton) findViewById(R.id.underline);
+        ImageButton underline = findViewById(R.id.underline);
 
-        underline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.underline(!knife.contains(KnifeText.FORMAT_UNDERLINED));
-            }
-        });
+        underline.setOnClickListener(v -> knife.underline(!knife.contains(KnifeText.FORMAT_UNDERLINED)));
 
-        underline.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_underline, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        underline.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_underline, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupStrikethrough() {
-        ImageButton strikethrough = (ImageButton) findViewById(R.id.strikethrough);
+        ImageButton strikethrough = findViewById(R.id.strikethrough);
 
-        strikethrough.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.strikethrough(!knife.contains(KnifeText.FORMAT_STRIKETHROUGH));
-            }
-        });
+        strikethrough.setOnClickListener(v -> knife.strikethrough(!knife.contains(KnifeText.FORMAT_STRIKETHROUGH)));
 
-        strikethrough.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_strikethrough, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        strikethrough.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_strikethrough, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupBullet() {
-        ImageButton bullet = (ImageButton) findViewById(R.id.bullet);
+        ImageButton bullet = findViewById(R.id.bullet);
 
-        bullet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.bullet(!knife.contains(KnifeText.FORMAT_BULLET));
-            }
-        });
+        bullet.setOnClickListener(v -> knife.bullet(!knife.contains(KnifeText.FORMAT_BULLET)));
 
 
-        bullet.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_bullet, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        bullet.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_bullet, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupQuote() {
-        ImageButton quote = (ImageButton) findViewById(R.id.quote);
+        ImageButton quote = findViewById(R.id.quote);
 
-        quote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.quote(!knife.contains(KnifeText.FORMAT_QUOTE));
-            }
-        });
+        quote.setOnClickListener(v -> knife.quote(!knife.contains(KnifeText.FORMAT_QUOTE)));
 
-        quote.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        quote.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupLink() {
-        ImageButton link = (ImageButton) findViewById(R.id.link);
+        ImageButton link = findViewById(R.id.link);
 
-        link.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLinkDialog();
-            }
-        });
+        link.setOnClickListener(v -> showLinkDialog());
 
-        link.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_insert_link, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        link.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_insert_link, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
     private void setupClear() {
-        ImageButton clear = (ImageButton) findViewById(R.id.clear);
+        ImageButton clear = findViewById(R.id.clear);
 
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                knife.clearFormats();
-            }
-        });
+        clear.setOnClickListener(v -> knife.clearFormats());
 
-        clear.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(MainActivity.this, R.string.toast_format_clear, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        clear.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_format_clear, Toast.LENGTH_SHORT).show();
+            return true;
         });
     }
 
@@ -210,31 +147,36 @@ public class MainActivity extends Activity {
         builder.setCancelable(false);
 
         View view = getLayoutInflater().inflate(R.layout.dialog_link, null, false);
-        final EditText editText = (EditText) view.findViewById(R.id.edit);
+        final EditText editText = view.findViewById(R.id.edit);
         builder.setView(view);
         builder.setTitle(R.string.dialog_title);
 
-        builder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String link = editText.getText().toString().trim();
-                if (TextUtils.isEmpty(link)) {
-                    return;
-                }
-
-                // When KnifeText lose focus, use this method
-                knife.link(link, start, end);
+        builder.setPositiveButton(R.string.dialog_button_ok, (dialog, which) -> {
+            String link = editText.getText().toString().trim();
+            if (TextUtils.isEmpty(link)) {
+                return;
             }
+
+            // When KnifeText lose focus, use this method
+            knife.link(link, start, end);
         });
 
-        builder.setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // DO NOTHING HERE
-            }
+        builder.setNegativeButton(R.string.dialog_button_cancel, (dialog, which) -> {
+            // DO NOTHING HERE
         });
 
         builder.create().show();
+    }
+
+    private void setupTextColor() {
+        TextView textColor = findViewById(R.id.txtColor);
+
+        textColor.setOnClickListener(v -> knife.textColor("#ff0000", !knife.contains(KnifeText.TEXT_COLOR)));
+
+        textColor.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_bold, Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 
     @Override

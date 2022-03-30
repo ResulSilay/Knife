@@ -48,7 +48,7 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BULLET = 0x05;
     public static final int FORMAT_QUOTE = 0x06;
     public static final int FORMAT_LINK = 0x07;
-    public static final int FORMAT_COLOR = 0x08;
+    public static final int TEXT_COLOR = 0x08;
 
     private int bulletColor = 0;
     private int bulletRadius = 0;
@@ -236,20 +236,28 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
-    public void textColor(boolean valid) {
+    public void textColor(String colorHex, boolean valid) {
         if (valid) {
-            styleTextColorValid(getSelectionStart(), getSelectionEnd());
+            styleTextColorValid(colorHex, getSelectionStart(), getSelectionEnd());
         } else {
             styleTextColorInvalid(getSelectionStart(), getSelectionEnd());
         }
     }
 
-    protected void styleTextColorValid(int start, int end) {
+    protected void styleTextColorValid(String colorHex, int start, int end) {
         if (start >= end) {
             return;
         }
 
-        getEditableText().setSpan(new ForegroundColorSpan(Color.RED), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getEditableText().setSpan(new ForegroundColorSpan(Color.parseColor(colorHex)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    protected void styleTextColorValid(int color, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     protected void styleTextColorInvalid(int start, int end) {
@@ -261,18 +269,18 @@ public class KnifeText extends EditText implements TextWatcher {
         List<KnifePart> list = new ArrayList<>();
 
         for (ForegroundColorSpan span : spans) {
-            list.add(new KnifePart(getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            list.add(new KnifePart(span.getForegroundColor(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
             getEditableText().removeSpan(span);
         }
 
         for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
-                    styleTextColorValid(part.getStart(), start);
+                    styleTextColorValid(part.getColor(), part.getStart(), start);
                 }
 
                 if (part.getEnd() > end) {
-                    styleTextColorValid(end, part.getEnd());
+                    styleTextColorValid(part.getColor(), end, part.getEnd());
                 }
             }
         }
@@ -287,15 +295,15 @@ public class KnifeText extends EditText implements TextWatcher {
             if (start - 1 < 0 || start + 1 > getEditableText().length()) {
                 return false;
             } else {
-                StrikethroughSpan[] before = getEditableText().getSpans(start - 1, start, StrikethroughSpan.class);
-                StrikethroughSpan[] after = getEditableText().getSpans(start, start + 1, StrikethroughSpan.class);
+                ForegroundColorSpan[] before = getEditableText().getSpans(start - 1, start, ForegroundColorSpan.class);
+                ForegroundColorSpan[] after = getEditableText().getSpans(start, start + 1, ForegroundColorSpan.class);
                 return before.length > 0 && after.length > 0;
             }
         } else {
             StringBuilder builder = new StringBuilder();
 
             for (int i = start; i < end; i++) {
-                if (getEditableText().getSpans(i, i + 1, StrikethroughSpan.class).length > 0) {
+                if (getEditableText().getSpans(i, i + 1, ForegroundColorSpan.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
@@ -883,7 +891,7 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containQuote();
             case FORMAT_LINK:
                 return containLink(getSelectionStart(), getSelectionEnd());
-            case FORMAT_COLOR:
+            case TEXT_COLOR:
                 return containTextColor(getSelectionStart(), getSelectionEnd());
             default:
                 return false;
