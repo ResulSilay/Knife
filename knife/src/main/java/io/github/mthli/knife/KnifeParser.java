@@ -192,7 +192,7 @@ public class KnifeParser {
 
                 if (spans[j] instanceof ForegroundColorSpan) {
                     ForegroundColorSpan foregroundColorSpan = ((ForegroundColorSpan) spans[j]);
-                    out.append("<font color'");
+                    out.append("<font color='");
                     out.append(KnifeUtil.intColorToHex(foregroundColorSpan.getForegroundColor()));
                     out.append("'>");
                 }
