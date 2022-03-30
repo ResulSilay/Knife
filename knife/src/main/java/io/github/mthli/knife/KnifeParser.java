@@ -23,6 +23,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BulletSpan;
 import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
@@ -188,6 +189,13 @@ public class KnifeParser {
                     // Don't output the dummy character underlying the image.
                     i = next;
                 }
+
+                if (spans[j] instanceof ForegroundColorSpan) {
+                    ForegroundColorSpan foregroundColorSpan = ((ForegroundColorSpan) spans[j]);
+                    out.append("<font color'");
+                    out.append(KnifeUtil.intColorToHex(foregroundColorSpan.getForegroundColor()));
+                    out.append("'>");
+                }
             }
 
             withinStyle(out, text, i, next);
@@ -214,6 +222,10 @@ public class KnifeParser {
                     if ((style & Typeface.ITALIC) != 0) {
                         out.append("</i>");
                     }
+                }
+
+                if (spans[j] instanceof ForegroundColorSpan) {
+                    out.append("</font>");
                 }
             }
         }
