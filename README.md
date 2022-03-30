@@ -1,7 +1,7 @@
 Knife
 ===
 
-### Added features for the knife library
+# Added features for the knife library
 - Gradle upgrade.
 - Text color.
 
