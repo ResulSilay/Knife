@@ -28,6 +28,7 @@ import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.QuoteSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
@@ -49,6 +50,7 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_QUOTE = 0x06;
     public static final int FORMAT_LINK = 0x07;
     public static final int TEXT_COLOR = 0x08;
+    public static final int HEADING_TAG = 0x09;
 
     private int bulletColor = 0;
     private int bulletRadius = 0;
@@ -236,6 +238,8 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
+    // TextColor ===============================================================================
+
     public void textColor(String colorHex, boolean valid) {
         if (valid) {
             styleTextColorValid(colorHex, getSelectionStart(), getSelectionEnd());
@@ -276,11 +280,11 @@ public class KnifeText extends EditText implements TextWatcher {
         for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
-                    styleTextColorValid(part.getColor(), part.getStart(), start);
+                    styleTextColorValid(part.getValue(), part.getStart(), start);
                 }
 
                 if (part.getEnd() > end) {
-                    styleTextColorValid(part.getColor(), end, part.getEnd());
+                    styleTextColorValid(part.getValue(), end, part.getEnd());
                 }
             }
         }
@@ -304,6 +308,77 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, ForegroundColorSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1));
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+
+    // TextColor ===============================================================================
+
+    public void headingTag(float hValue, boolean valid) {
+        if (valid) {
+            styleHeadingTagValid(hValue, getSelectionStart(), getSelectionEnd());
+        } else {
+            styleHeadingTagInvalid(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    protected void styleHeadingTagValid(float hValue, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new RelativeSizeSpan(hValue), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    protected void styleHeadingTagInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        RelativeSizeSpan[] spans = getEditableText().getSpans(start, end, RelativeSizeSpan.class);
+        List<KnifePart> list = new ArrayList<>();
+
+        for (RelativeSizeSpan span : spans) {
+            list.add(new KnifePart(span.getSpanTypeId(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            getEditableText().removeSpan(span);
+        }
+
+        for (KnifePart part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    styleHeadingTagValid(part.getValue(), part.getStart(), start);
+                }
+
+                if (part.getEnd() > end) {
+                    styleHeadingTagValid(part.getValue(), end, part.getEnd());
+                }
+            }
+        }
+    }
+
+    protected boolean containHeadingTag(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                RelativeSizeSpan[] before = getEditableText().getSpans(start - 1, start, RelativeSizeSpan.class);
+                RelativeSizeSpan[] after = getEditableText().getSpans(start, start + 1, RelativeSizeSpan.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, RelativeSizeSpan.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
@@ -893,6 +968,8 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containLink(getSelectionStart(), getSelectionEnd());
             case TEXT_COLOR:
                 return containTextColor(getSelectionStart(), getSelectionEnd());
+            case HEADING_TAG:
+                return containHeadingTag(getSelectionStart(), getSelectionEnd());
             default:
                 return false;
         }

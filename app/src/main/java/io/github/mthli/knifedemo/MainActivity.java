@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeText;
+import io.github.mthli.knife.defaults.HeadingTagDefault;
 
 public class MainActivity extends Activity {
     private static final String BOLD = "<b>Bold</b><br><br>";
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
         setupQuote();
         setupLink();
         setupTextColor();
+        setupHeadingTags();
         setupClear();
     }
 
@@ -177,6 +179,22 @@ public class MainActivity extends Activity {
             Toast.makeText(MainActivity.this, R.string.toast_bold, Toast.LENGTH_SHORT).show();
             return true;
         });
+    }
+
+    private void setupHeadingTags() {
+        TextView headingTag1 = findViewById(R.id.h1);
+        TextView headingTag2 = findViewById(R.id.h2);
+        TextView headingTag3 = findViewById(R.id.h3);
+        TextView headingTag4 = findViewById(R.id.h4);
+        TextView headingTag5 = findViewById(R.id.h5);
+        TextView headingTag6 = findViewById(R.id.h6);
+
+        headingTag1.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H1.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
+        headingTag2.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H2.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
+        headingTag3.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H3.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
+        headingTag4.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H4.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
+        headingTag5.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H5.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
+        headingTag6.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H6.getValue(), !knife.contains(KnifeText.HEADING_TAG)));
     }
 
     @Override

@@ -19,21 +19,21 @@ package io.github.mthli.knife;
 public class KnifePart {
     private final int start;
     private final int end;
-    private int color;
+    private int value;
 
     public KnifePart(int start, int end) {
         this.start = start;
         this.end = end;
     }
 
-    public KnifePart(int color, int start, int end) {
-        this.color = color;
+    public KnifePart(int value, int start, int end) {
+        this.value = value;
         this.start = start;
         this.end = end;
     }
 
-    public int getColor() {
-        return color;
+    public int getValue() {
+        return value;
     }
 
     public int getStart() {
