@@ -27,10 +27,13 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
+import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
+
+import io.github.mthli.knife.defaults.HeadingTagDefault;
 
 public class KnifeParser {
     public static Spanned fromHtml(String source) {
@@ -195,6 +198,22 @@ public class KnifeParser {
                     out.append("<font color='");
                     out.append(KnifeUtil.intColorToHex(foregroundColorSpan.getForegroundColor()));
                     out.append("'>");
+                }
+
+                if (spans[j] instanceof RelativeSizeSpan) {
+                    if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H1.getValue()) {
+                        out.append("<h1>");
+                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H2.getValue()) {
+                        out.append("<h2>");
+                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H3.getValue()) {
+                        out.append("<h3>");
+                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H4.getValue()) {
+                        out.append("<h4>");
+                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H5.getValue()) {
+                        out.append("<h5>");
+                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H5.getValue()) {
+                        out.append("<h6>");
+                    }
                 }
             }
 

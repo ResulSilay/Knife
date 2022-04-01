@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.github.mthli.knife.defaults.HeadingTagDefault;
+
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
     public static final int FORMAT_ITALIC = 0x02;
@@ -319,20 +321,20 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // TextColor ===============================================================================
 
-    public void headingTag(float hValue, boolean valid) {
+    public void headingTag(HeadingTagDefault headingTagDefault, boolean valid) {
         if (valid) {
-            styleHeadingTagValid(hValue, getSelectionStart(), getSelectionEnd());
+            styleHeadingTagValid(headingTagDefault, getSelectionStart(), getSelectionEnd());
         } else {
             styleHeadingTagInvalid(getSelectionStart(), getSelectionEnd());
         }
     }
 
-    protected void styleHeadingTagValid(float hValue, int start, int end) {
+    protected void styleHeadingTagValid(HeadingTagDefault headingTagDefault, int start, int end) {
         if (start >= end) {
             return;
         }
 
-        getEditableText().setSpan(new RelativeSizeSpan(hValue), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getEditableText().setSpan(new RelativeSizeSpan(headingTagDefault.getValue()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     protected void styleHeadingTagInvalid(int start, int end) {
@@ -344,18 +346,18 @@ public class KnifeText extends EditText implements TextWatcher {
         List<KnifePart> list = new ArrayList<>();
 
         for (RelativeSizeSpan span : spans) {
-            list.add(new KnifePart(span.getSpanTypeId(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            list.add(new KnifePart(span.getSizeChange(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
             getEditableText().removeSpan(span);
         }
 
         for (KnifePart part : list) {
             if (part.isValid()) {
                 if (part.getStart() < start) {
-                    styleHeadingTagValid(part.getValue(), part.getStart(), start);
+                    styleHeadingTagValid(HeadingTagDefault.get(part.getValueFloat()), part.getStart(), start);
                 }
 
                 if (part.getEnd() > end) {
-                    styleHeadingTagValid(part.getValue(), end, part.getEnd());
+                    styleHeadingTagValid(HeadingTagDefault.get(part.getValueFloat()), end, part.getEnd());
                 }
             }
         }
