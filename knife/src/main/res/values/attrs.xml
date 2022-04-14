@@ -27,6 +27,8 @@
         <attr name="quoteColor" format="reference|color" />
         <attr name="quoteStripeWidth" format="reference|dimension" />
         <attr name="quoteCapWidth" format="reference|dimension" />
+        <attr name="isLine" format="reference|boolean" />
+        <attr name="lineColor" format="reference|color" />
     </declare-styleable>
 
 </resources>

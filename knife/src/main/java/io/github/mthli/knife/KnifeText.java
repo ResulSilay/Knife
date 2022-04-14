@@ -18,7 +18,10 @@ package io.github.mthli.knife;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -64,13 +67,18 @@ public class KnifeText extends EditText implements TextWatcher {
     private int quoteColor = 0;
     private int quoteStripeWidth = 0;
     private int quoteGapWidth = 0;
+    private boolean isLine = false;
+    private int lineColor = 0;
 
-    private List<Editable> historyList = new LinkedList<>();
+    private final List<Editable> historyList = new LinkedList<>();
     private boolean historyWorking = false;
     private int historyCursor = 0;
 
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
+
+    private Rect mRect;
+    private Paint mPaint;
 
     public KnifeText(Context context) {
         super(context);
@@ -94,6 +102,9 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void init(AttributeSet attrs) {
+        mRect = new Rect();
+        mPaint = new Paint();
+
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
         bulletRadius = array.getDimensionPixelSize(R.styleable.KnifeText_bulletRadius, 0);
@@ -105,7 +116,11 @@ public class KnifeText extends EditText implements TextWatcher {
         quoteColor = array.getColor(R.styleable.KnifeText_quoteColor, 0);
         quoteStripeWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteStripeWidth, 0);
         quoteGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteCapWidth, 0);
+        isLine = array.getBoolean(R.styleable.KnifeText_isLine, false);
+        lineColor = array.getColor(R.styleable.KnifeText_lineColor, 0);
         array.recycle();
+
+        setLine(isLine);
 
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize must > 0");
@@ -123,6 +138,63 @@ public class KnifeText extends EditText implements TextWatcher {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         removeTextChangedListener(this);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        if (isLine) {
+            int height = getHeight();
+            int line_height = getLineHeight();
+            int count = height / line_height;
+
+            if (getLineCount() > count) {
+                count = getLineCount();
+            }
+
+            Rect r = mRect;
+            Paint paint = mPaint;
+            int baseline = getLineBounds(0, r);
+
+            for (int i = 0; i < count; i++) {
+                canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
+                baseline += getLineHeight();
+            }
+        }
+
+        super.onDraw(canvas);
+    }
+
+    public void setLine(boolean isLine) {
+        this.isLine = isLine;
+        if (isLine) {
+            initLine();
+        } else {
+            clearLine();
+        }
+    }
+
+    public boolean getIsLine() {
+        return isLine;
+    }
+
+    private void initLine() {
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaint.setColor(lineColor);
+        setMinLines(20);
+    }
+
+    private void clearLine() {
+        mPaint.setStyle(Paint.Style.FILL);
+        mPaint.setColor(Color.TRANSPARENT);
+        setMinLines(0);
+    }
+
+    public void lineColor(int color) {
+        this.lineColor = color;
+    }
+
+    public int getLineColor() {
+        return lineColor;
     }
 
     // StyleSpan ===================================================================================

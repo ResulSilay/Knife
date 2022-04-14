@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -49,6 +50,7 @@ public class MainActivity extends Activity {
         setupLink();
         setupTextColor();
         setupHeadingTags();
+        setupLine();
         setupClear();
     }
 
@@ -195,6 +197,20 @@ public class MainActivity extends Activity {
         headingTag4.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H4, !knife.contains(KnifeText.HEADING_TAG)));
         headingTag5.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H5, !knife.contains(KnifeText.HEADING_TAG)));
         headingTag6.setOnClickListener(v -> knife.headingTag(HeadingTagDefault.H6, !knife.contains(KnifeText.HEADING_TAG)));
+    }
+
+    private void setupLine() {
+        TextView line = findViewById(R.id.line);
+
+        line.setOnClickListener(v -> {
+            knife.lineColor(Color.parseColor("#000000"));
+            knife.setLine(!knife.getIsLine());
+        });
+
+        line.setOnLongClickListener(v -> {
+            Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 
     @Override
