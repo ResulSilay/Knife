@@ -26,12 +26,14 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
@@ -46,7 +48,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
+import io.github.mthli.knife.spans.AlignmentSpan;
 
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
@@ -411,7 +415,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
 
-    // TextColor ===============================================================================
+    // Heading ===============================================================================
 
     public void headingTag(HeadingTagDefault headingTagDefault, boolean valid) {
         if (valid) {
@@ -473,6 +477,76 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, RelativeSizeSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1));
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+    // Heading ===============================================================================
+
+    public void aligning(HeadingTagDefault headingTagDefault, boolean valid) {
+        if (valid) {
+            styleHeadingTagValid(headingTagDefault, getSelectionStart(), getSelectionEnd());
+        } else {
+            styleHeadingTagInvalid(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    protected void styleAligningValid(AligningDefault aligningDefault, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new AlignmentSpan.Custom(aligningDefault.getValue()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    protected void styleAligningInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        AlignmentSpan[] spans = getEditableText().getSpans(start, end, AlignmentSpan.class);
+        List<KnifePart> list = new ArrayList<>();
+
+        for (AlignmentSpan span : spans) {
+            list.add(new KnifePart(span.getAlignment().getValue(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            getEditableText().removeSpan(span);
+        }
+
+        for (KnifePart part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    styleAligningValid(AligningDefault.get(part.getValue()), part.getStart(), start);
+                }
+
+                if (part.getEnd() > end) {
+                    styleAligningValid(AligningDefault.get(part.getValue()), end, part.getEnd());
+                }
+            }
+        }
+    }
+
+    protected boolean containAligning(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                ParagraphStyle[] before = getEditableText().getSpans(start - 1, start, ParagraphStyle.class);
+                ParagraphStyle[] after = getEditableText().getSpans(start, start + 1, ParagraphStyle.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, ParagraphStyle.class).length > 0) {
                     builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
