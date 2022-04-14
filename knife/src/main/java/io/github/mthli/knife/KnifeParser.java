@@ -259,6 +259,14 @@ public class KnifeParser {
                     }
                 }
 
+                if (spans[j] instanceof RelativeSizeSpan) {
+                    out.append("</h>");
+                }
+
+                if (spans[j] instanceof AlignmentSpan) {
+                    out.append("</p>");
+                }
+
                 if (spans[j] instanceof ForegroundColorSpan) {
                     out.append("</font>");
                 }
