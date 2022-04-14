@@ -16,10 +16,12 @@
 
 package io.github.mthli.knife;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -77,8 +79,11 @@ public class KnifeText extends EditText implements TextWatcher {
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
 
-    private Rect mRect;
-    private Paint mPaint;
+    private static final float VERTICAL_OFFSET_SCALING_FACTOR = 0.1f;
+    private static final float DASHED_LINE_ON_SCALE_FACTOR = 0.008f;
+    private static final float DASHED_LINE_OFF_SCALE_FACTOR = 0.0125f;
+    private Paint dashedLinePaint;
+    private Rect reusableRect;
 
     public KnifeText(Context context) {
         super(context);
@@ -102,9 +107,6 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void init(AttributeSet attrs) {
-        mRect = new Rect();
-        mPaint = new Paint();
-
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
         bulletRadius = array.getDimensionPixelSize(R.styleable.KnifeText_bulletRadius, 0);
@@ -140,23 +142,32 @@ public class KnifeText extends EditText implements TextWatcher {
         removeTextChangedListener(this);
     }
 
+    //https://stackoverflow.com/questions/21243969/drawing-background-lines-in-an-edittext-that-uses-a-custom-font-or-typeface
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
         if (isLine) {
-            int height = getHeight();
-            int line_height = getLineHeight();
-            int count = height / line_height;
+            dashedLinePaint.setPathEffect(new DashPathEffect(new float[]{
+                    getWidth() * DASHED_LINE_ON_SCALE_FACTOR,
+                    getWidth() * DASHED_LINE_OFF_SCALE_FACTOR}, 0));
 
-            if (getLineCount() > count) {
-                count = getLineCount();
+            int height = getHeight();
+            int lineHeight = getLineHeight() ;
+            int verticalOffset = 1;//(int) (lineHeight * VERTICAL_OFFSET_SCALING_FACTOR)+100;
+            int numberOfLines = height / lineHeight;
+            if (getLineCount() > numberOfLines) {
+                numberOfLines = getLineCount();
             }
 
-            Rect r = mRect;
-            Paint paint = mPaint;
-            int baseline = getLineBounds(0, r);
+            int baseline = getLineBounds(0, reusableRect);
+            for (int i = 0; i < numberOfLines; i++) {
+                canvas.drawLine(
+                        reusableRect.left,
+                        baseline + verticalOffset,
+                        reusableRect.right,
+                        baseline + verticalOffset,
+                        dashedLinePaint);
 
-            for (int i = 0; i < count; i++) {
-                canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
                 baseline += getLineHeight();
             }
         }
@@ -178,14 +189,14 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void initLine() {
-        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaint.setColor(lineColor);
+        reusableRect = new Rect();
+        dashedLinePaint = new Paint();
+        dashedLinePaint.setColor(lineColor);
+        dashedLinePaint.setStyle(Paint.Style.STROKE);
         setMinLines(20);
     }
 
     private void clearLine() {
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.TRANSPARENT);
         setMinLines(0);
     }
 

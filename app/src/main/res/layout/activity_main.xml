@@ -18,6 +18,19 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/line"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:scaleType="center"
+                android:text="Line"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/h1"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -194,20 +207,6 @@
                 android:textAlignment="center"
                 android:textColor="#fff"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/line"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?android:selectableItemBackground"
-                android:contentDescription="@null"
-                android:gravity="center"
-                android:scaleType="center"
-                android:text="Line"
-                android:textAlignment="center"
-                android:textColor="#fff"
-                android:textStyle="bold" />
-
         </LinearLayout>
 
     </HorizontalScrollView>
