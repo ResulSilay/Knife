@@ -236,7 +236,7 @@
         app:historySize="99"
         app:isLine="true"
         app:isLinePadding="false"
-        app:lineColor="@color/blue_200"
+        app:lineColor="@android:color/black"
         app:linkColor="@color/blue_500"
         app:linkUnderline="true"
         app:quoteCapWidth="@dimen/quote_gap_width"
