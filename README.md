@@ -6,6 +6,8 @@ Just select text and use one line code to style it!
 ## Added features for the knife library
 - Gradle upgrade.
 - Text color.
+- Drawing background lines.
+- Heading tags.
 
 ## Base Repo
 [Knife](https://github.com/mthli/Knife "Knife")
