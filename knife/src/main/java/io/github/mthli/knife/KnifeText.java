@@ -79,11 +79,8 @@ public class KnifeText extends EditText implements TextWatcher {
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
 
-    private static final float VERTICAL_OFFSET_SCALING_FACTOR = 0.1f;
-    private static final float DASHED_LINE_ON_SCALE_FACTOR = 0.008f;
-    private static final float DASHED_LINE_OFF_SCALE_FACTOR = 0.0125f;
-    private Paint dashedLinePaint;
-    private Rect reusableRect;
+    private Rect mRect;
+    private Paint mPaint;
 
     public KnifeText(Context context) {
         super(context);
@@ -147,27 +144,20 @@ public class KnifeText extends EditText implements TextWatcher {
     @Override
     protected void onDraw(Canvas canvas) {
         if (isLine) {
-            dashedLinePaint.setPathEffect(new DashPathEffect(new float[]{
-                    getWidth() * DASHED_LINE_ON_SCALE_FACTOR,
-                    getWidth() * DASHED_LINE_OFF_SCALE_FACTOR}, 0));
-
             int height = getHeight();
-            int lineHeight = getLineHeight() ;
-            int verticalOffset = 1;//(int) (lineHeight * VERTICAL_OFFSET_SCALING_FACTOR)+100;
-            int numberOfLines = height / lineHeight;
-            if (getLineCount() > numberOfLines) {
-                numberOfLines = getLineCount();
-            }
+            int line_height = getLineHeight();
 
-            int baseline = getLineBounds(0, reusableRect);
-            for (int i = 0; i < numberOfLines; i++) {
-                canvas.drawLine(
-                        reusableRect.left,
-                        baseline + verticalOffset,
-                        reusableRect.right,
-                        baseline + verticalOffset,
-                        dashedLinePaint);
+            int count = height / line_height;
 
+            if (getLineCount() > count)
+                count = getLineCount();
+
+            Rect r = mRect;
+            Paint paint = mPaint;
+            int baseline = getLineBounds(0, r);
+
+            for (int i = 0; i < count; i++) {
+                canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
                 baseline += getLineHeight();
             }
         }
@@ -189,15 +179,13 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void initLine() {
-        reusableRect = new Rect();
-        dashedLinePaint = new Paint();
-        dashedLinePaint.setColor(lineColor);
-        dashedLinePaint.setStyle(Paint.Style.STROKE);
-        setMinLines(20);
+        mRect = new Rect();
+        mPaint = new Paint();
+        mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaint.setColor(getLineColor());
     }
 
     private void clearLine() {
-        setMinLines(0);
     }
 
     public void lineColor(int color) {
