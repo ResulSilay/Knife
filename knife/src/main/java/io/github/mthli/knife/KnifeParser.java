@@ -33,7 +33,9 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
+import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
+import io.github.mthli.knife.spans.AlignmentSpan;
 
 public class KnifeParser {
     public static Spanned fromHtml(String source) {
@@ -201,18 +203,32 @@ public class KnifeParser {
                 }
 
                 if (spans[j] instanceof RelativeSizeSpan) {
-                    if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H1.getValue()) {
+                    float size = ((RelativeSizeSpan) spans[j]).getSizeChange();
+                    if (size == HeadingTagDefault.H1.getValue()) {
                         out.append("<h1>");
-                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H2.getValue()) {
+                    } else if (size == HeadingTagDefault.H2.getValue()) {
                         out.append("<h2>");
-                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H3.getValue()) {
+                    } else if (size == HeadingTagDefault.H3.getValue()) {
                         out.append("<h3>");
-                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H4.getValue()) {
+                    } else if (size == HeadingTagDefault.H4.getValue()) {
                         out.append("<h4>");
-                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H5.getValue()) {
+                    } else if (size == HeadingTagDefault.H5.getValue()) {
                         out.append("<h5>");
-                    } else if (((RelativeSizeSpan) spans[j]).getSizeChange() == HeadingTagDefault.H5.getValue()) {
+                    } else if (size == HeadingTagDefault.H6.getValue()) {
                         out.append("<h6>");
+                    }
+                }
+
+                if (spans[j] instanceof AlignmentSpan) {
+                    AligningDefault aligningDefault = ((AlignmentSpan) spans[j]).getAlignment();
+                    if (aligningDefault == AligningDefault.LEFT) {
+                        out.append("<p align='left'>");
+                    } else if (aligningDefault == AligningDefault.RIGHT) {
+                        out.append("<p align='right'>");
+                    } else if (aligningDefault == AligningDefault.CENTER) {
+                        out.append("<p align='center'>");
+                    } else if (aligningDefault == AligningDefault.JUSTIFY) {
+                        out.append("<p align='justify'>");
                     }
                 }
             }

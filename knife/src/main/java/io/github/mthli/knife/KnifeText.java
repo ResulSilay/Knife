@@ -487,11 +487,11 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // Heading ===============================================================================
 
-    public void aligning(HeadingTagDefault headingTagDefault, boolean valid) {
+    public void aligning(AligningDefault aligningDefault, boolean valid) {
         if (valid) {
-            styleHeadingTagValid(headingTagDefault, getSelectionStart(), getSelectionEnd());
+            styleAligningValid(aligningDefault, getSelectionStart(), getSelectionEnd());
         } else {
-            styleHeadingTagInvalid(getSelectionStart(), getSelectionEnd());
+            styleAligningInvalid(getSelectionStart(), getSelectionEnd());
         }
     }
 
