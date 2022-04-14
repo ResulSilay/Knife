@@ -161,7 +161,7 @@ public class KnifeText extends EditText implements TextWatcher {
             int left;
             int right;
 
-            if (isLinePadding) {
+            if (isLinePadding()) {
                 left = r.left;
                 right = r.right;
             } else {
@@ -187,8 +187,16 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
-    public boolean getIsLine() {
+    public boolean isLine() {
         return isLine;
+    }
+
+    public void setIsLinePadding(boolean status) {
+        this.isLinePadding = status;
+    }
+
+    public boolean isLinePadding() {
+        return isLinePadding;
     }
 
     private void initLine() {

@@ -204,7 +204,7 @@ public class MainActivity extends Activity {
 
         line.setOnClickListener(v -> {
             knife.lineColor(Color.parseColor("#000000"));
-            knife.setLine(!knife.getIsLine());
+            knife.setLine(!knife.isLine());
         });
 
         line.setOnLongClickListener(v -> {
