@@ -70,6 +70,7 @@ public class KnifeText extends EditText implements TextWatcher {
     private int quoteStripeWidth = 0;
     private int quoteGapWidth = 0;
     private boolean isLine = false;
+    private boolean isLinePadding = false;
     private int lineColor = 0;
 
     private final List<Editable> historyList = new LinkedList<>();
@@ -116,6 +117,7 @@ public class KnifeText extends EditText implements TextWatcher {
         quoteStripeWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteStripeWidth, 0);
         quoteGapWidth = array.getDimensionPixelSize(R.styleable.KnifeText_quoteCapWidth, 0);
         isLine = array.getBoolean(R.styleable.KnifeText_isLine, false);
+        isLinePadding = array.getBoolean(R.styleable.KnifeText_isLinePadding, false);
         lineColor = array.getColor(R.styleable.KnifeText_lineColor, 0);
         array.recycle();
 
@@ -156,8 +158,19 @@ public class KnifeText extends EditText implements TextWatcher {
             Paint paint = mPaint;
             int baseline = getLineBounds(0, r);
 
+            int left;
+            int right;
+
+            if (isLinePadding) {
+                left = r.left;
+                right = r.right;
+            } else {
+                left = getLeft();
+                right = getRight();
+            }
+
             for (int i = 0; i < count; i++) {
-                canvas.drawLine(r.left, baseline + 1, r.right, baseline + 1, paint);
+                canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
                 baseline += getLineHeight();
             }
         }
