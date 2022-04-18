@@ -41,6 +41,7 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -51,6 +52,7 @@ import java.util.List;
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
 import io.github.mthli.knife.spans.AlignmentSpan;
+import io.github.mthli.knife.spans.EditorListener;
 
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
@@ -62,6 +64,7 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_LINK = 0x07;
     public static final int TEXT_COLOR = 0x08;
     public static final int HEADING_TAG = 0x09;
+    public static final int TEXT_ALIGN = 0x10;
 
     private int bulletColor = 0;
     private int bulletRadius = 0;
@@ -81,6 +84,7 @@ public class KnifeText extends EditText implements TextWatcher {
     private boolean historyWorking = false;
     private int historyCursor = 0;
 
+    private EditorListener editorListener;
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
 
@@ -126,6 +130,7 @@ public class KnifeText extends EditText implements TextWatcher {
         array.recycle();
 
         setLine(isLine);
+        setupListener();
 
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize must > 0");
@@ -180,6 +185,16 @@ public class KnifeText extends EditText implements TextWatcher {
         }
 
         super.onDraw(canvas);
+    }
+
+    public void onEditorListener(EditorListener editorListener) {
+        this.editorListener = editorListener;
+    }
+
+    public void setupListener() {
+        getRootView().setOnClickListener(v -> {
+            editorListener.onEditorClick();
+        });
     }
 
     public void setLine(boolean isLine) {
@@ -1138,6 +1153,8 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containTextColor(getSelectionStart(), getSelectionEnd());
             case HEADING_TAG:
                 return containHeadingTag(getSelectionStart(), getSelectionEnd());
+            case TEXT_ALIGN:
+                return containAligning(getSelectionStart(), getSelectionEnd());
             default:
                 return false;
         }
