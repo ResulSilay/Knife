@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,6 +17,62 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/left"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:scaleType="center"
+                android:text="LEFT"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/center"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:scaleType="center"
+                android:text="CENTER"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/right"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:scaleType="center"
+                android:text="RIGHT"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/justify"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:scaleType="center"
+                android:text="JUSTIFY"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/line"
@@ -218,9 +275,7 @@
         android:layout_above="@id/headingTagTools"
         android:layout_alignParentTop="true"
         android:background="@android:color/white"
-        android:focusable="false"
         android:gravity="top|start"
-        android:inputType="none"
         android:minLines="20"
         android:paddingStart="16dp"
         android:paddingLeft="16dp"
@@ -230,7 +285,6 @@
         android:scrollbars="vertical"
         android:singleLine="false"
         android:textColor="@android:color/black"
-        android:textIsSelectable="true"
         app:bulletColor="@color/blue_500"
         app:bulletGapWidth="@dimen/bullet_gap_width"
         app:bulletRadius="@dimen/bullet_radius"
@@ -243,6 +297,9 @@
         app:linkUnderline="true"
         app:quoteCapWidth="@dimen/quote_gap_width"
         app:quoteColor="@color/blue_500"
-        app:quoteStripeWidth="@dimen/quote_stripe_width" />
+        app:quoteStripeWidth="@dimen/quote_stripe_width"
+        tools:focusable="false"
+        tools:inputType="none"
+        tools:textIsSelectable="true" />
 
 </RelativeLayout>

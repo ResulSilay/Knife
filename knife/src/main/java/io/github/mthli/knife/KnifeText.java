@@ -23,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Editable;
@@ -88,6 +89,7 @@ public class KnifeText extends EditText implements TextWatcher {
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
 
+    private Canvas canvas;
     private Rect mRect;
     private Paint mPaint;
 
@@ -154,6 +156,7 @@ public class KnifeText extends EditText implements TextWatcher {
     @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
+        this.canvas = canvas;
         if (isLine) {
             int height = getHeight();
             int line_height = getLineHeight();
@@ -226,6 +229,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void clearLine() {
+        this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
 
     public void lineColor(int color) {

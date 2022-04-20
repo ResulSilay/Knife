@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.github.mthli.knife.KnifeText;
+import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
 import io.github.mthli.knife.spans.EditorListener;
 
@@ -53,6 +54,7 @@ public class MainActivity extends Activity implements EditorListener {
         setupTextColor();
         setupHeadingTags();
         setupLine();
+        setupAlign();
         setupClear();
     }
 
@@ -218,6 +220,18 @@ public class MainActivity extends Activity implements EditorListener {
             Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
             return true;
         });
+    }
+
+    private void setupAlign() {
+        TextView left = findViewById(R.id.left);
+        TextView center = findViewById(R.id.center);
+        TextView right = findViewById(R.id.right);
+        TextView justify = findViewById(R.id.justify);
+
+        left.setOnClickListener(v -> knife.aligning(AligningDefault.LEFT, !knife.contains(KnifeText.TEXT_ALIGN)));
+        center.setOnClickListener(v -> knife.aligning(AligningDefault.CENTER, !knife.contains(KnifeText.TEXT_ALIGN)));
+        right.setOnClickListener(v -> knife.aligning(AligningDefault.RIGHT, !knife.contains(KnifeText.TEXT_ALIGN)));
+        justify.setOnClickListener(v -> knife.aligning(AligningDefault.JUSTIFY, !knife.contains(KnifeText.TEXT_ALIGN)));
     }
 
     @Override
