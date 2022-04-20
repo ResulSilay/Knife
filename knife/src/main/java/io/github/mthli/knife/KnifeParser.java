@@ -158,9 +158,9 @@ public class KnifeParser {
             next = text.nextSpanTransition(i, end, CharacterStyle.class);
 
             CharacterStyle[] spans = text.getSpans(i, next, CharacterStyle.class);
-            for (int j = 0; j < spans.length; j++) {
-                if (spans[j] instanceof StyleSpan) {
-                    int style = ((StyleSpan) spans[j]).getStyle();
+            for (CharacterStyle span : spans) {
+                if (span instanceof StyleSpan) {
+                    int style = ((StyleSpan) span).getStyle();
 
                     if ((style & Typeface.BOLD) != 0) {
                         out.append("<b>");
@@ -171,39 +171,39 @@ public class KnifeParser {
                     }
                 }
 
-                if (spans[j] instanceof UnderlineSpan) {
+                if (span instanceof UnderlineSpan) {
                     out.append("<u>");
                 }
 
                 // Use standard strikethrough tag <del> rather than <s> or <strike>
-                if (spans[j] instanceof StrikethroughSpan) {
+                if (span instanceof StrikethroughSpan) {
                     out.append("<del>");
                 }
 
-                if (spans[j] instanceof URLSpan) {
+                if (span instanceof URLSpan) {
                     out.append("<a href=\"");
-                    out.append(((URLSpan) spans[j]).getURL());
+                    out.append(((URLSpan) span).getURL());
                     out.append("\">");
                 }
 
-                if (spans[j] instanceof ImageSpan) {
+                if (span instanceof ImageSpan) {
                     out.append("<img src=\"");
-                    out.append(((ImageSpan) spans[j]).getSource());
+                    out.append(((ImageSpan) span).getSource());
                     out.append("\">");
 
                     // Don't output the dummy character underlying the image.
                     i = next;
                 }
 
-                if (spans[j] instanceof ForegroundColorSpan) {
-                    ForegroundColorSpan foregroundColorSpan = ((ForegroundColorSpan) spans[j]);
+                if (span instanceof ForegroundColorSpan) {
+                    ForegroundColorSpan foregroundColorSpan = ((ForegroundColorSpan) span);
                     out.append("<font color='");
                     out.append(KnifeUtil.intColorToHex(foregroundColorSpan.getForegroundColor()));
                     out.append("'>");
                 }
 
-                if (spans[j] instanceof RelativeSizeSpan) {
-                    float size = ((RelativeSizeSpan) spans[j]).getSizeChange();
+                if (span instanceof RelativeSizeSpan) {
+                    float size = ((RelativeSizeSpan) span).getSizeChange();
                     if (size == HeadingTagDefault.H1.getValue()) {
                         out.append("<h1>");
                     } else if (size == HeadingTagDefault.H2.getValue()) {
@@ -219,8 +219,8 @@ public class KnifeParser {
                     }
                 }
 
-                if (spans[j] instanceof AlignmentSpan) {
-                    AligningDefault aligningDefault = ((AlignmentSpan) spans[j]).getAlignment();
+                if (span instanceof AlignmentSpan) {
+                    AligningDefault aligningDefault = ((AlignmentSpan) span).getAlignmentData();
                     if (aligningDefault == AligningDefault.LEFT) {
                         out.append("<p align='left'>");
                     } else if (aligningDefault == AligningDefault.RIGHT) {

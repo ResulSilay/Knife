@@ -21,13 +21,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -185,6 +183,8 @@ public class KnifeText extends EditText implements TextWatcher {
                 canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
                 baseline += getLineHeight();
             }
+        } else {
+            clearLine();
         }
 
         super.onDraw(canvas);
@@ -229,6 +229,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void clearLine() {
+        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
     }
 
@@ -519,7 +520,7 @@ public class KnifeText extends EditText implements TextWatcher {
             return;
         }
 
-        getEditableText().setSpan(new AlignmentSpan.Custom(aligningDefault.getValue()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getEditableText().setSpan(new AlignmentSpan(aligningDefault.getValue()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     protected void styleAligningInvalid(int start, int end) {
@@ -531,7 +532,7 @@ public class KnifeText extends EditText implements TextWatcher {
         List<KnifePart> list = new ArrayList<>();
 
         for (AlignmentSpan span : spans) {
-            list.add(new KnifePart(span.getAlignment().getValue(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            list.add(new KnifePart(span.getValue(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
             getEditableText().removeSpan(span);
         }
 

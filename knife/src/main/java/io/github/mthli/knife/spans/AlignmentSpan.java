@@ -3,84 +3,70 @@ package io.github.mthli.knife.spans;
 import android.os.Parcel;
 import android.text.Layout;
 import android.text.ParcelableSpan;
-import android.text.style.ParagraphStyle;
+import android.text.TextPaint;
+import android.text.style.CharacterStyle;
 
 import androidx.annotation.NonNull;
 
 import io.github.mthli.knife.defaults.AligningDefault;
 
-public interface AlignmentSpan extends ParagraphStyle {
+public class AlignmentSpan extends CharacterStyle implements android.text.style.AlignmentSpan, ParcelableSpan {
+
+    private final AligningDefault mAlignment;
 
     /**
-     * Returns the alignment of the text.
-     *
-     * @return the text alignment
+     * Constructs a {@link Standard} from an alignment.
      */
-    AligningDefault getAlignment();
+    public AlignmentSpan(int mAlignment) {
+        this.mAlignment = AligningDefault.get(mAlignment);
+    }
 
     /**
-     * Default implementation of the {@link android.text.style.AlignmentSpan}.
-     * <p>
-     * For example, a text written in a left to right language, like English, which is by default
-     * aligned to the left, can be aligned opposite to the layout direction like this:
-     * <pre>{@code SpannableString string = new SpannableString("Text with opposite alignment");
-     *string.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), 0,
-     *string.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);}</pre>
-     * <img src="{@docRoot}reference/android/images/text/style/ltralignmentspan.png" />
-     * <figcaption>Align left to right text opposite to the layout direction.</figcaption>
-     * <p>
-     * A text written in a right to left language, like Hebrew, which is by default aligned to the
-     * right, can be aligned opposite to the layout direction like this:
-     * <pre>{@code SpannableString string = new SpannableString("טקסט עם יישור הפוך");
-     *string.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_OPPOSITE), 0,
-     *string.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);}</pre>
-     * <img src="{@docRoot}reference/android/images/text/style/rtlalignmentspan.png" />
-     * <figcaption>Align right to left text opposite to the layout direction.</figcaption>
+     * Constructs a {@link Standard} from a parcel.
      */
-    class Custom implements android.text.style.AlignmentSpan, ParcelableSpan {
+    public AlignmentSpan(@NonNull Parcel src) {
+        mAlignment = AligningDefault.valueOf(src.readString());
+    }
 
-        private final AligningDefault mAlignment;
+    @Override
+    public int getSpanTypeId() {
+        return getSpanTypeIdInternal();
+    }
 
-        /**
-         * Constructs a {@link Standard} from an alignment.
-         */
-        public Custom(@NonNull int align) {
-            mAlignment = AligningDefault.get(align);
-        }
+    public int getSpanTypeIdInternal() {
+        return 0;
+    }
 
-        /**
-         * Constructs a {@link Standard} from a parcel.
-         */
-        public Custom(@NonNull Parcel src) {
-            mAlignment = AligningDefault.valueOf(src.readString());
-        }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-        @Override
-        public int getSpanTypeId() {
-            return getSpanTypeIdInternal();
-        }
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        writeToParcelInternal(dest, flags);
+    }
 
-        public int getSpanTypeIdInternal() {
-            return 0;
-        }
+    public void writeToParcelInternal(@NonNull Parcel dest, int flags) {
+        dest.writeString(mAlignment.name());
+    }
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
 
-        @Override
-        public void writeToParcel(@NonNull Parcel dest, int flags) {
-            writeToParcelInternal(dest, flags);
-        }
+    public int getValue(){
+        return this.mAlignment.getValue();
+    }
 
-        public void writeToParcelInternal(@NonNull Parcel dest, int flags) {
-            dest.writeString(mAlignment.name());
-        }
+    public AligningDefault getAlignmentData(){
+        return this.mAlignment;
+    }
 
-        @Override
-        public Layout.Alignment getAlignment() {
-            return null;
-        }
+    @Override
+    public Layout.Alignment getAlignment() {
+        return null;
+    }
+
+    @Override
+    public void updateDrawState(TextPaint tp) {
+
     }
 }
