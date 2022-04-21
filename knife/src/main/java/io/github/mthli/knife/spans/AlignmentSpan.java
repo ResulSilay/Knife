@@ -13,11 +13,13 @@ import io.github.mthli.knife.defaults.AligningDefault;
 public class AlignmentSpan extends CharacterStyle implements android.text.style.AlignmentSpan, ParcelableSpan {
 
     private final AligningDefault mAlignment;
+    private int mAlignmentPosition;
 
     /**
      * Constructs a {@link Standard} from an alignment.
      */
     public AlignmentSpan(int mAlignment) {
+        this.mAlignmentPosition = mAlignment;
         this.mAlignment = AligningDefault.get(mAlignment);
     }
 
@@ -25,7 +27,7 @@ public class AlignmentSpan extends CharacterStyle implements android.text.style.
      * Constructs a {@link Standard} from a parcel.
      */
     public AlignmentSpan(@NonNull Parcel src) {
-        mAlignment = AligningDefault.valueOf(src.readString());
+        mAlignment = AligningDefault.get(src.readInt());
     }
 
     @Override
@@ -52,17 +54,17 @@ public class AlignmentSpan extends CharacterStyle implements android.text.style.
     }
 
 
-    public int getValue(){
-        return this.mAlignment.getValue();
+    public int getValue() {
+        return this.mAlignmentPosition;
     }
 
-    public AligningDefault getAlignmentData(){
+    public AligningDefault getAlignmentData() {
         return this.mAlignment;
     }
 
     @Override
     public Layout.Alignment getAlignment() {
-        return null;
+        return Layout.Alignment.ALIGN_CENTER;
     }
 
     @Override
