@@ -1,4 +1,4 @@
-package io.github.mthli.knife.spans;
+package io.github.mthli.knife.listener;
 
 public interface EditorListener {
 

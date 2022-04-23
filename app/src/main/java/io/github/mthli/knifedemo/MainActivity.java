@@ -19,9 +19,8 @@ import android.widget.Toast;
 import io.github.mthli.knife.KnifeText;
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
-import io.github.mthli.knife.spans.EditorListener;
 
-public class MainActivity extends Activity implements EditorListener {
+public class MainActivity extends Activity {
     private static final String BOLD = "<b>Bold</b><br><br>";
     private static final String ITALIT = "<i>Italic</i><br><br>";
     private static final String UNDERLINE = "<u>Underline</u><br><br>";
@@ -42,7 +41,6 @@ public class MainActivity extends Activity implements EditorListener {
         // ImageGetter coming soon...
         knife.fromHtml(EXAMPLE);
         knife.setSelection(knife.getEditableText().length());
-        knife.onEditorListener(this);
 
         setupBold();
         setupItalic();
@@ -56,11 +54,6 @@ public class MainActivity extends Activity implements EditorListener {
         setupLine();
         setupAlign();
         setupClear();
-    }
-
-    @Override
-    public void onEditorClick() {
-        Toast.makeText(MainActivity.this, "Editor Clicked.", Toast.LENGTH_SHORT).show();
     }
 
     private void setupBold() {

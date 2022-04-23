@@ -50,8 +50,8 @@ import java.util.List;
 
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
+import io.github.mthli.knife.listener.EditorListener;
 import io.github.mthli.knife.spans.AlignmentSpan;
-import io.github.mthli.knife.spans.EditorListener;
 
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
@@ -130,7 +130,6 @@ public class KnifeText extends EditText implements TextWatcher {
         array.recycle();
 
         setLine(isLine);
-        setupListener();
 
         if (historyEnable && historySize <= 0) {
             throw new IllegalArgumentException("historySize must > 0");
@@ -188,16 +187,6 @@ public class KnifeText extends EditText implements TextWatcher {
         }
 
         super.onDraw(canvas);
-    }
-
-    public void onEditorListener(EditorListener editorListener) {
-        this.editorListener = editorListener;
-    }
-
-    public void setupListener() {
-        getRootView().setOnClickListener(v -> {
-            editorListener.onEditorClick();
-        });
     }
 
     public void setLine(boolean isLine) {
