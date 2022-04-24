@@ -260,7 +260,7 @@ public class KnifeParser {
                 }
 
                 if (spans[j] instanceof RelativeSizeSpan) {
-                    out.append("</h>");
+                    out.append("</h>"); //h1,h2,h3,...
                 }
 
                 if (spans[j] instanceof AlignmentSpan) {
@@ -270,6 +270,10 @@ public class KnifeParser {
                 if (spans[j] instanceof ForegroundColorSpan) {
                     out.append("</font>");
                 }
+
+                /*if (spans[j] instanceof ImageSpan) {
+                    out.append("</img>");
+                }*/
             }
         }
 

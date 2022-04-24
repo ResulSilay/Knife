@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -31,6 +32,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
@@ -62,6 +64,7 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int TEXT_COLOR = 0x08;
     public static final int HEADING_TAG = 0x09;
     public static final int TEXT_ALIGN = 0x10;
+    public static final int IMAGE = 0x11;
 
     private int bulletColor = 0;
     private int bulletRadius = 0;
@@ -1033,6 +1036,78 @@ public class KnifeText extends EditText implements TextWatcher {
         }
     }
 
+
+    // Image ===============================================================================
+
+    public void image(String url, boolean valid) {
+        if (valid) {
+            styleImageValid(url, getSelectionStart(), getSelectionEnd());
+        } else {
+            styleImageInvalid(getSelectionStart(), getSelectionEnd());
+        }
+    }
+
+    protected void styleImageValid(String url, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        getEditableText().setSpan(new ImageSpan(getContext(), Uri.parse(url)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    protected void styleImageInvalid(int start, int end) {
+        if (start >= end) {
+            return;
+        }
+
+        ImageSpan[] spans = getEditableText().getSpans(start, end, ImageSpan.class);
+        List<KnifePart> list = new ArrayList<>();
+
+        for (ImageSpan span : spans) {
+            list.add(new KnifePart(span.getSource(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
+            getEditableText().removeSpan(span);
+        }
+
+        for (KnifePart part : list) {
+            if (part.isValid()) {
+                if (part.getStart() < start) {
+                    styleImageValid(part.getValueString(), part.getStart(), start);
+                }
+
+                if (part.getEnd() > end) {
+                    styleImageValid(part.getValueString(), end, part.getEnd());
+                }
+            }
+        }
+    }
+
+    protected boolean containImage(int start, int end) {
+        if (start > end) {
+            return false;
+        }
+
+        if (start == end) {
+            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
+                return false;
+            } else {
+                ImageSpan[] before = getEditableText().getSpans(start - 1, start, ImageSpan.class);
+                ImageSpan[] after = getEditableText().getSpans(start, start + 1, ImageSpan.class);
+                return before.length > 0 && after.length > 0;
+            }
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            for (int i = start; i < end; i++) {
+                if (getEditableText().getSpans(i, i + 1, ImageSpan.class).length > 0) {
+                    builder.append(getEditableText().subSequence(i, i + 1));
+                }
+            }
+
+            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
+        }
+    }
+
+
     // Redo/Undo ===================================================================================
 
     @Override
@@ -1151,6 +1226,8 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containHeadingTag(getSelectionStart(), getSelectionEnd());
             case TEXT_ALIGN:
                 return containAligning(getSelectionStart(), getSelectionEnd());
+            case IMAGE:
+                return containImage(getSelectionStart(), getSelectionEnd());
             default:
                 return false;
         }

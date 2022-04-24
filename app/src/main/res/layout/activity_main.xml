@@ -19,6 +19,20 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="@null"
+                android:gravity="center"
+                android:paddingHorizontal="8dp"
+                android:scaleType="center"
+                android:text="IMG"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/left"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"

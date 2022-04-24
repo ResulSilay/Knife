@@ -20,6 +20,7 @@ public class KnifePart {
     private final int start;
     private final int end;
     private int value;
+    private String valueString;
     private float valueFloat;
 
     public KnifePart(int start, int end) {
@@ -29,6 +30,12 @@ public class KnifePart {
 
     public KnifePart(int value, int start, int end) {
         this.value = value;
+        this.start = start;
+        this.end = end;
+    }
+
+    public KnifePart(String value, int start, int end) {
+        this.valueString = value;
         this.start = start;
         this.end = end;
     }
@@ -45,6 +52,10 @@ public class KnifePart {
 
     public float getValueFloat() {
         return valueFloat;
+    }
+
+    public String getValueString() {
+        return valueString;
     }
 
     public int getStart() {

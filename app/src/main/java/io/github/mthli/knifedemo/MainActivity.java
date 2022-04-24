@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ public class MainActivity extends Activity {
         setupHeadingTags();
         setupLine();
         setupAlign();
+        setupImage();
         setupClear();
     }
 
@@ -132,6 +135,22 @@ public class MainActivity extends Activity {
             Toast.makeText(MainActivity.this, R.string.toast_insert_link, Toast.LENGTH_SHORT).show();
             return true;
         });
+    }
+
+    private void setupImage() {
+        TextView image = findViewById(R.id.image);
+        ApplicationInfo appInfo;
+        String imageUrl = null;
+        try {
+            appInfo = getPackageManager().getApplicationInfo(getPackageName(), 0);
+            if (appInfo.icon != 0) {
+                imageUrl = "android.resource://" + getPackageName() + "/" + appInfo.icon;
+            }
+            String finalImageUrl = imageUrl;
+            image.setOnClickListener(v -> knife.image(finalImageUrl, !knife.contains(KnifeText.IMAGE)));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupClear() {
