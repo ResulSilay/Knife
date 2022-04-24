@@ -22,7 +22,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.Editable;
@@ -40,7 +39,6 @@ import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -215,11 +213,13 @@ public class KnifeText extends EditText implements TextWatcher {
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         mPaint.setColor(getLineColor());
+        if (canvas != null) {
+            canvas.drawColor(Color.TRANSPARENT);
+        }
     }
 
     private void clearLine() {
-        this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        this.canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(Color.TRANSPARENT);
     }
 
     public void lineColor(int color) {
