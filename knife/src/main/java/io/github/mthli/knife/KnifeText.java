@@ -631,7 +631,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, UnderlineSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1).toString());
+                    builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
 
@@ -701,7 +701,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, StrikethroughSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1).toString());
+                    builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
 
@@ -1028,7 +1028,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, URLSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1).toString());
+                    builder.append(getEditableText().subSequence(i, i + 1));
                 }
             }
 
@@ -1048,7 +1048,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     protected void styleImageValid(String url, int start, int end) {
-        if (start >= end) {
+        if (start > end) {
             return;
         }
 
@@ -1189,11 +1189,7 @@ public class KnifeText extends EditText implements TextWatcher {
             return false;
         }
 
-        if (historyList.size() <= 0 || historyCursor <= 0) {
-            return false;
-        }
-
-        return true;
+        return historyList.size() > 0 && historyCursor > 0;
     }
 
     public void clearHistory() {
