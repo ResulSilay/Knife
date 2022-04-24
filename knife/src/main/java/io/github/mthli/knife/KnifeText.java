@@ -219,7 +219,9 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void clearLine() {
-        canvas.drawColor(Color.TRANSPARENT);
+        if (canvas != null) {
+            canvas.drawColor(Color.TRANSPARENT);
+        }
     }
 
     public void lineColor(int color) {
