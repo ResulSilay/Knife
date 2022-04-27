@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -139,18 +137,8 @@ public class MainActivity extends Activity {
 
     private void setupImage() {
         TextView image = findViewById(R.id.image);
-        ApplicationInfo appInfo;
-        String imageUrl = null;
-        try {
-            appInfo = getPackageManager().getApplicationInfo(getPackageName(), 0);
-            if (appInfo.icon != 0) {
-                imageUrl = "android.resource://" + getPackageName() + "/" + appInfo.icon;
-            }
-            String finalImageUrl = imageUrl;
-            image.setOnClickListener(v -> knife.image(finalImageUrl, !knife.contains(KnifeText.IMAGE)));
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        image.setOnClickListener(v -> startImageSelect());
     }
 
     private void setupClear() {
@@ -244,6 +232,33 @@ public class MainActivity extends Activity {
         center.setOnClickListener(v -> knife.aligning(AligningDefault.CENTER, !knife.contains(KnifeText.TEXT_ALIGN)));
         right.setOnClickListener(v -> knife.aligning(AligningDefault.RIGHT, !knife.contains(KnifeText.TEXT_ALIGN)));
         justify.setOnClickListener(v -> knife.aligning(AligningDefault.JUSTIFY, !knife.contains(KnifeText.TEXT_ALIGN)));
+    }
+
+    private void startImageSelect() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+        switch (requestCode) {
+            case 0:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    knife.image(selectedImage.toString(), !knife.contains(KnifeText.IMAGE));
+                }
+
+                break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = imageReturnedIntent.getData();
+                    knife.image(selectedImage.getPath(), !knife.contains(KnifeText.IMAGE));
+
+                }
+                break;
+        }
     }
 
     @Override
