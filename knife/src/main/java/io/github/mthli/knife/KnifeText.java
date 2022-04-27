@@ -19,6 +19,7 @@ package io.github.mthli.knife;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,13 +27,14 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BulletSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.ImageSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
@@ -44,14 +46,21 @@ import android.util.AttributeSet;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
-import io.github.mthli.knife.listener.EditorListener;
+import io.github.mthli.knife.glide.GlideApp;
+import io.github.mthli.knife.glide.GlideImageGetter;
+import io.github.mthli.knife.glide.GlideRequests;
 import io.github.mthli.knife.spans.AlignmentSpan;
+import io.github.mthli.knife.spans.ImageCustomSpan;
+import io.github.mthli.knife.util.BitmapUtil;
 
 public class KnifeText extends EditText implements TextWatcher {
     public static final int FORMAT_BOLD = 0x01;
@@ -64,7 +73,6 @@ public class KnifeText extends EditText implements TextWatcher {
     public static final int TEXT_COLOR = 0x08;
     public static final int HEADING_TAG = 0x09;
     public static final int TEXT_ALIGN = 0x10;
-    public static final int IMAGE = 0x11;
 
     private int bulletColor = 0;
     private int bulletRadius = 0;
@@ -84,9 +92,9 @@ public class KnifeText extends EditText implements TextWatcher {
     private boolean historyWorking = false;
     private int historyCursor = 0;
 
-    private EditorListener editorListener;
     private SpannableStringBuilder inputBefore;
     private Editable inputLast;
+    private GlideRequests glideRequests;
 
     private Canvas canvas;
     private Rect mRect;
@@ -114,6 +122,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void init(AttributeSet attrs) {
+        glideRequests = GlideApp.with(this);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
         bulletRadius = array.getDimensionPixelSize(R.styleable.KnifeText_bulletRadius, 0);
@@ -1039,72 +1048,33 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // Image ===============================================================================
 
-    public void image(String url, boolean valid) {
-        if (valid) {
-            styleImageValid(url, getSelectionStart(), getSelectionEnd());
-        } else {
-            styleImageInvalid(getSelectionStart(), getSelectionEnd());
-        }
+    public void image(final Uri uri, final int maxWidth) {
+        //noinspection deprecation
+        glideRequests.asBitmap()
+                .load(uri)
+                .centerCrop()
+                .error(R.drawable.fill_img)
+                .placeholder(R.drawable.fill_img)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        Bitmap bitmap = BitmapUtil.zoomBitmapToFixWidth(resource, maxWidth);
+                        image(uri, bitmap);
+                    }
+                });
     }
 
-    protected void styleImageValid(String url, int start, int end) {
-        if (start > end) {
-            return;
-        }
-
-        getEditableText().setSpan(new ImageSpan(getContext(), Uri.parse(url)), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    public void image(final Uri uri) {
+        int width = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        image(uri, width);
     }
 
-    protected void styleImageInvalid(int start, int end) {
-        if (start >= end) {
-            return;
-        }
-
-        ImageSpan[] spans = getEditableText().getSpans(start, end, ImageSpan.class);
-        List<KnifePart> list = new ArrayList<>();
-
-        for (ImageSpan span : spans) {
-            list.add(new KnifePart(span.getSource(), getEditableText().getSpanStart(span), getEditableText().getSpanEnd(span)));
-            getEditableText().removeSpan(span);
-        }
-
-        for (KnifePart part : list) {
-            if (part.isValid()) {
-                if (part.getStart() < start) {
-                    styleImageValid(part.getValueString(), part.getStart(), start);
-                }
-
-                if (part.getEnd() > end) {
-                    styleImageValid(part.getValueString(), end, part.getEnd());
-                }
-            }
-        }
-    }
-
-    protected boolean containImage(int start, int end) {
-        if (start > end) {
-            return false;
-        }
-
-        if (start == end) {
-            if (start - 1 < 0 || start + 1 > getEditableText().length()) {
-                return false;
-            } else {
-                ImageSpan[] before = getEditableText().getSpans(start - 1, start, ImageSpan.class);
-                ImageSpan[] after = getEditableText().getSpans(start, start + 1, ImageSpan.class);
-                return before.length > 0 && after.length > 0;
-            }
-        } else {
-            StringBuilder builder = new StringBuilder();
-
-            for (int i = start; i < end; i++) {
-                if (getEditableText().getSpans(i, i + 1, ImageSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1));
-                }
-            }
-
-            return getEditableText().subSequence(start, end).toString().equals(builder.toString());
-        }
+    public void image(Uri uri, Bitmap pic) {
+        SpannableString ss = new SpannableString(" \n");
+        ImageCustomSpan span = new ImageCustomSpan(getContext(), pic, uri);
+        ss.setSpan(span, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = getSelectionStart();
+        getEditableText().insert(start, ss);
     }
 
 
@@ -1222,8 +1192,6 @@ public class KnifeText extends EditText implements TextWatcher {
                 return containHeadingTag(getSelectionStart(), getSelectionEnd());
             case TEXT_ALIGN:
                 return containAligning(getSelectionStart(), getSelectionEnd());
-            case IMAGE:
-                return containImage(getSelectionStart(), getSelectionEnd());
             default:
                 return false;
         }
@@ -1248,7 +1216,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
     public void fromHtml(String source) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        builder.append(KnifeParser.fromHtml(source));
+        builder.append(KnifeParser.fromHtml(source, new GlideImageGetter(this, glideRequests)));
         switchToKnifeStyle(builder, 0, builder.length());
         setText(builder);
     }

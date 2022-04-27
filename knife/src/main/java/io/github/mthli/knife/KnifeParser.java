@@ -38,8 +38,8 @@ import io.github.mthli.knife.defaults.HeadingTagDefault;
 import io.github.mthli.knife.spans.AlignmentSpan;
 
 public class KnifeParser {
-    public static Spanned fromHtml(String source) {
-        return Html.fromHtml(source, null, new KnifeTagHandler());
+    public static Spanned fromHtml(String source, Html.ImageGetter imageGetter) {
+        return Html.fromHtml(source, imageGetter, new KnifeTagHandler());
     }
 
     public static String toHtml(Spanned text) {
@@ -187,7 +187,7 @@ public class KnifeParser {
                 }
 
                 if (span instanceof ImageSpan) {
-                    out.append("<img src=\"");
+                    out.append("<img width=\"100%\" src=\"");
                     out.append(((ImageSpan) span).getSource());
                     out.append("\">");
 

@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.mthli.knifedemo"
-        minSdkVersion 14
+        minSdkVersion 19
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
@@ -26,4 +26,7 @@ android {
 
 dependencies {
     api project(':knife')
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.github.jrvansuita:PickImage:3.0.0'
 }

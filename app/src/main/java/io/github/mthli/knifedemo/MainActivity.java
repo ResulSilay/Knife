@@ -1,7 +1,6 @@
 package io.github.mthli.knifedemo;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,11 +17,20 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.gson.Gson;
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
+
 import io.github.mthli.knife.KnifeText;
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
 
-public class MainActivity extends Activity {
+@SuppressWarnings("deprecation")
+public class MainActivity extends AppCompatActivity implements IPickResult {
     private static final String BOLD = "<b>Bold</b><br><br>";
     private static final String ITALIT = "<i>Italic</i><br><br>";
     private static final String UNDERLINE = "<u>Underline</u><br><br>";
@@ -139,7 +148,7 @@ public class MainActivity extends Activity {
     private void setupImage() {
         TextView image = findViewById(R.id.image);
 
-        image.setOnClickListener(v -> startImageSelect());
+        image.setOnClickListener(v -> startPictures());
         image.setOnLongClickListener(v -> {
             startCameraSelect();
             return false;
@@ -239,15 +248,46 @@ public class MainActivity extends Activity {
         justify.setOnClickListener(v -> knife.aligning(AligningDefault.JUSTIFY, !knife.contains(KnifeText.TEXT_ALIGN)));
     }
 
-    private void startImageSelect() {
+    PickSetup setup = new PickSetup();
+
+    private void startPictures() {
+        PickImageDialog.build(setup).show(this);
+    }
+
+    private void startCameraSelect() {
         Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture, 0);
     }
 
-    private void startCameraSelect() {
+    private void startImageSelect() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto , 1);
+        startActivityForResult(pickPhoto, 1);
+    }
+
+    @Override
+    public void onPickResult(PickResult r) {
+        if (r.getError() == null) {
+            //If you want the Uri.
+            //Mandatory to refresh image from Uri.
+            //getImageView().setImageURI(null);
+
+            Log.e("selectImagePath", "" + new Gson().toJson(r));
+
+            //Setting the real returned image.
+            //getImageView().setImageURI(r.getUri());
+            knife.image(r.getUri());
+
+            //If you want the Bitmap.
+            //getImageView().setImageBitmap(r.getBitmap());
+
+            //Image path
+            //r.getPath();
+        } else {
+            //Handle possible errors
+            //TODO: do what you have to do with r.getError();
+            Toast.makeText(this, r.getError().getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -257,15 +297,16 @@ public class MainActivity extends Activity {
             case 0:
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
-                    knife.image(selectedImage.toString(), !knife.contains(KnifeText.IMAGE));
+                    Log.e("selectImagePath", "(camera):" + new Gson().toJson(imageReturnedIntent));
+                    //knife.image(selectedImage.toString(), !knife.contains(KnifeText.IMAGE));
                 }
 
                 break;
             case 1:
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
-                    knife.image(selectedImage.getPath(), !knife.contains(KnifeText.IMAGE));
-
+                    Log.e("selectImagePath", "(image):" + new Gson().toJson(imageReturnedIntent));
+                    //knife.image(selectedImage.getPath(), !knife.contains(KnifeText.IMAGE));
                 }
                 break;
         }
