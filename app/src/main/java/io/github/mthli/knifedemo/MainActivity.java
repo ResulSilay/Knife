@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -139,6 +140,10 @@ public class MainActivity extends Activity {
         TextView image = findViewById(R.id.image);
 
         image.setOnClickListener(v -> startImageSelect());
+        image.setOnLongClickListener(v -> {
+            startCameraSelect();
+            return false;
+        });
     }
 
     private void setupClear() {
@@ -235,9 +240,14 @@ public class MainActivity extends Activity {
     }
 
     private void startImageSelect() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, 0);
+    }
+
+    private void startCameraSelect() {
         Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
+        startActivityForResult(pickPhoto , 1);
     }
 
     @Override
