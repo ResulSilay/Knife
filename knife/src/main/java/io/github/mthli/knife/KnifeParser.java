@@ -42,6 +42,10 @@ public class KnifeParser {
         return Html.fromHtml(source, imageGetter, new KnifeTagHandler());
     }
 
+    public static Spanned fromHtml(String source) {
+        return Html.fromHtml(source, null, new KnifeTagHandler());
+    }
+
     public static String toHtml(Spanned text) {
         StringBuilder out = new StringBuilder();
         withinHtml(out, text);

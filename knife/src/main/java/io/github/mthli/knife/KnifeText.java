@@ -640,7 +640,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, UnderlineSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1));
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
                 }
             }
 
@@ -710,7 +710,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, StrikethroughSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1));
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
                 }
             }
 
@@ -1037,7 +1037,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
             for (int i = start; i < end; i++) {
                 if (getEditableText().getSpans(i, i + 1, URLSpan.class).length > 0) {
-                    builder.append(getEditableText().subSequence(i, i + 1));
+                    builder.append(getEditableText().subSequence(i, i + 1).toString());
                 }
             }
 
@@ -1159,7 +1159,11 @@ public class KnifeText extends EditText implements TextWatcher {
             return false;
         }
 
-        return historyList.size() > 0 && historyCursor > 0;
+        if (historyList.size() <= 0 || historyCursor <= 0) {
+            return false;
+        }
+
+        return true;
     }
 
     public void clearHistory() {

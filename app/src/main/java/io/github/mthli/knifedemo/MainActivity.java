@@ -31,14 +31,15 @@ import io.github.mthli.knife.defaults.HeadingTagDefault;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity implements IPickResult {
-    private static final String BOLD = "<b>Bold</b><br><br>";
-    private static final String ITALIT = "<i>Italic</i><br><br>";
+    private static final String TEXT = "The story follows a young prince who visits various planets in space, including Earth, and addresses themes of loneliness, friendship, love, and loss. Despite its style as a children's book, The Little Prince makes observations about life, adults and human nature. The story follows a young prince who visits various planets in space, including Earth, and addresses themes of loneliness, friendship, love, and loss. Despite its style as a children's book, The Little Prince makes observations about life, adults and human nature. The story follows a young prince who visits various planets in space, including Earth, and addresses themes of loneliness, friendship, love, and loss. Despite its style as a children's book, The Little Prince makes observations about life, adults and human nature. The story follows a young prince who visits various planets in space, including Earth, and addresses themes of loneliness, friendship, love, and loss. Despite its style as a children's book, The Little Prince makes observations about life, adults and human nature.";
+    private static final String BOLD = TEXT + TEXT + TEXT + TEXT + TEXT + "<b>Bold</b><br><br>";
+    private static final String ITALIC = "<i>Italic</i><br><br>";
     private static final String UNDERLINE = "<u>Underline</u><br><br>";
     private static final String STRIKETHROUGH = "<s>Strikethrough</s><br><br>"; // <s> or <strike> or <del>
     private static final String BULLET = "<ul><li>Bullet</li></ul>";
     private static final String QUOTE = "<blockquote>Quote</blockquote>";
     private static final String LINK = "<a href=\"https://github.com/mthli/Knife\">Link</a><br><br>";
-    private static final String EXAMPLE = BOLD + ITALIT + UNDERLINE + STRIKETHROUGH + BULLET + QUOTE + LINK;
+    private static final String EXAMPLE = TEXT + TEXT + TEXT + TEXT + TEXT + TEXT + TEXT;
 
     private KnifeText knife;
 
