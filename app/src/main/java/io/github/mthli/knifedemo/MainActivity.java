@@ -277,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements IPickResult {
 
             //Setting the real returned image.
             //getImageView().setImageURI(r.getUri());
+            Log.e("selectImagePath(path)", r.getPath());
+
             knife.image(r.getPath());
 
             //If you want the Bitmap.

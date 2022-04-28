@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.text.style.BulletSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.text.style.ParagraphStyle;
 import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
@@ -35,8 +36,6 @@ import android.text.style.UnderlineSpan;
 import io.github.mthli.knife.defaults.AligningDefault;
 import io.github.mthli.knife.defaults.HeadingTagDefault;
 import io.github.mthli.knife.spans.AlignmentSpan;
-import io.github.mthli.knife.spans.ImageCustomSpan;
-import io.github.mthli.knife.type.MediaImageType;
 
 public class KnifeParser {
     public static Spanned fromHtml(String source, Html.ImageGetter imageGetter) {
@@ -191,15 +190,9 @@ public class KnifeParser {
                     out.append("\">");
                 }
 
-                if (span instanceof ImageCustomSpan) {
-                    ImageCustomSpan imageCustomSpan = ((ImageCustomSpan) span);
+                if (span instanceof ImageSpan) {
                     out.append("<img width=\"100%\" src=\"");
-                    if (imageCustomSpan.getMediaImageType() == MediaImageType.FILE) {
-                        out.append("file://").append(imageCustomSpan.getSource());
-                    } else {
-                        out.append(imageCustomSpan.getSource());
-                    }
-
+                    out.append(((ImageSpan) span).getSource());
                     out.append("\">");
 
                     // Don't output the dummy character underlying the image.
