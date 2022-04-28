@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements IPickResult {
         knife = findViewById(R.id.knife);
         // ImageGetter coming soon...
         knife.fromHtml(EXAMPLE);
-        knife.setSelection(knife.getEditableText().length());
+        //knife.setSelection(knife.getEditableText().length());
 
         setupBold();
         setupItalic();
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements IPickResult {
 
             //Setting the real returned image.
             //getImageView().setImageURI(r.getUri());
-            knife.image(r.getUri());
+            knife.image("");
 
             //If you want the Bitmap.
             //getImageView().setImageBitmap(r.getBitmap());

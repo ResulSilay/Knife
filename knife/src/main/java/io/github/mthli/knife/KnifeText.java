@@ -46,9 +46,12 @@ import android.util.AttributeSet;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,6 +63,7 @@ import io.github.mthli.knife.glide.GlideImageGetter;
 import io.github.mthli.knife.glide.GlideRequests;
 import io.github.mthli.knife.spans.AlignmentSpan;
 import io.github.mthli.knife.spans.ImageCustomSpan;
+import io.github.mthli.knife.type.MediaImageType;
 import io.github.mthli.knife.util.BitmapUtil;
 
 public class KnifeText extends EditText implements TextWatcher {
@@ -1048,6 +1052,37 @@ public class KnifeText extends EditText implements TextWatcher {
 
     // Image ===============================================================================
 
+    public void image(final String path, final int maxWidth) {
+        //noinspection deprecation
+        glideRequests.asBitmap()
+                .load(new File(path))
+                .centerCrop()
+                .error(R.drawable.fill_img)
+                .placeholder(R.drawable.fill_img)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        Bitmap bitmap = BitmapUtil.zoomBitmapToFixWidth(resource, maxWidth);
+                        image(path, bitmap);
+                    }
+                });
+    }
+
+    public void image(final String path) {
+        int width = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        image(path, width);
+    }
+
+    public void image(String path, Bitmap pic) {
+        SpannableString ss = new SpannableString(" \n");
+        ImageCustomSpan span = new ImageCustomSpan(getContext(), pic, path, MediaImageType.FILE);
+        ss.setSpan(span, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        int start = getSelectionStart();
+        getEditableText().insert(start, ss);
+    }
+
+    //image -> Uri
+
     public void image(final Uri uri, final int maxWidth) {
         //noinspection deprecation
         glideRequests.asBitmap()
@@ -1057,7 +1092,7 @@ public class KnifeText extends EditText implements TextWatcher {
                 .placeholder(R.drawable.fill_img)
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                    public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
                         Bitmap bitmap = BitmapUtil.zoomBitmapToFixWidth(resource, maxWidth);
                         image(uri, bitmap);
                     }
@@ -1071,7 +1106,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
     public void image(Uri uri, Bitmap pic) {
         SpannableString ss = new SpannableString(" \n");
-        ImageCustomSpan span = new ImageCustomSpan(getContext(), pic, uri);
+        ImageCustomSpan span = new ImageCustomSpan(getContext(), pic, uri, MediaImageType.URI);
         ss.setSpan(span, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         int start = getSelectionStart();
         getEditableText().insert(start, ss);
