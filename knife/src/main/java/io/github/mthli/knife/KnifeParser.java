@@ -264,7 +264,21 @@ public class KnifeParser {
                 }
 
                 if (spans[j] instanceof RelativeSizeSpan) {
-                    out.append("</h>"); //h1,h2,h3,...
+                    float size = ((RelativeSizeSpan) spans[j]).getSizeChange();
+                    if (size == HeadingTagDefault.H1.getValue()) {
+                        out.append("</h1>");
+                    } else if (size == HeadingTagDefault.H2.getValue()) {
+                        out.append("</h2>");
+                    } else if (size == HeadingTagDefault.H3.getValue()) {
+                        out.append("</h3>");
+                    } else if (size == HeadingTagDefault.H4.getValue()) {
+                        out.append("</h4>");
+                    } else if (size == HeadingTagDefault.H5.getValue()) {
+                        out.append("</h5>");
+                    } else if (size == HeadingTagDefault.H6.getValue()) {
+                        out.append("</h6>");
+                    }
+                    //out.append("</h>"); //h1,h2,h3,...
                 }
 
                 if (spans[j] instanceof AlignmentSpan) {
