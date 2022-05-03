@@ -297,7 +297,7 @@
         android:scrollbarThumbVertical="@android:color/transparent"
         android:scrollbars="vertical"
         android:selectAllOnFocus="true"
-        android:textColor="@color/blue_200"
+        android:textColor="#FFC107"
         android:textColorHint="#6E6E6E"
         android:textIsSelectable="true"
         android:textSize="16sp"
