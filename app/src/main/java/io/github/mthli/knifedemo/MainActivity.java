@@ -49,9 +49,11 @@ public class MainActivity extends AppCompatActivity implements IPickResult {
         setContentView(R.layout.activity_main);
 
         knife = findViewById(R.id.knife);
+
         // ImageGetter coming soon...
         knife.fromHtml(EXAMPLE);
         //knife.setSelection(knife.getEditableText().length());
+        //knife.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         setupBold();
         setupItalic();
