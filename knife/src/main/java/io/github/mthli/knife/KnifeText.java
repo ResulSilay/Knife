@@ -23,7 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -127,7 +126,7 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void init(AttributeSet attrs) {
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
+        //setLayerType(LAYER_TYPE_SOFTWARE, null);
         glideRequests = GlideApp.with(this);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
@@ -199,7 +198,7 @@ public class KnifeText extends EditText implements TextWatcher {
                 baseline += getLineHeight();
             }
         } else {
-            clearLine();
+            //clearLine();
         }
 
         super.onDraw(canvas);
@@ -235,8 +234,12 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void clearLine() {
-        if (canvas != null) {
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        try {
+            if (canvas != null) {
+                canvas.drawColor(Color.TRANSPARENT);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
