@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -235,7 +236,7 @@ public class KnifeText extends EditText implements TextWatcher {
 
     private void clearLine() {
         if (canvas != null) {
-            canvas.drawColor(Color.TRANSPARENT);
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         }
     }
 
