@@ -169,34 +169,36 @@ public class KnifeText extends EditText implements TextWatcher {
     @Override
     protected void onDraw(Canvas canvas) {
         this.canvas = canvas;
-        if (isLine) {
-            int height = getHeight();
-            int line_height = getLineHeight();
+        if (isLine && canvas != null) {
+            getRootView().post(() -> {
+                int height = getHeight();
+                int line_height = getLineHeight();
 
-            int count = height / line_height;
+                int count = height / line_height;
 
-            if (getLineCount() > count)
-                count = getLineCount();
+                if (getLineCount() > count)
+                    count = getLineCount();
 
-            Rect r = mRect;
-            Paint paint = mPaint;
-            int baseline = getLineBounds(0, r);
+                Rect r = mRect;
+                Paint paint = mPaint;
+                int baseline = getLineBounds(0, r);
 
-            int left;
-            int right;
+                int left;
+                int right;
 
-            if (isLinePadding()) {
-                left = r.left;
-                right = r.right;
-            } else {
-                left = getLeft();
-                right = getRight();
-            }
+                if (isLinePadding()) {
+                    left = r.left;
+                    right = r.right;
+                } else {
+                    left = getLeft();
+                    right = getRight();
+                }
 
-            for (int i = 0; i < count; i++) {
-                canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
-                baseline += getLineHeight();
-            }
+                for (int i = 0; i < count; i++) {
+                    canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
+                    baseline += getLineHeight();
+                }
+            });
         } else {
             //clearLine();
         }
@@ -229,14 +231,17 @@ public class KnifeText extends EditText implements TextWatcher {
         mRect = new Rect();
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mPaint.setColor(getLineColor());
+        int lineColor = getLineColor();
+        mPaint.setColor(lineColor);
         clearLine();
     }
 
     private void clearLine() {
         try {
             if (canvas != null) {
-                canvas.drawColor(Color.TRANSPARENT);
+                //canvas.drawColor(Color.TRANSPARENT);
+                //canvas.restore();
+                mPaint.reset();
             }
         } catch (Exception e) {
             e.printStackTrace();
