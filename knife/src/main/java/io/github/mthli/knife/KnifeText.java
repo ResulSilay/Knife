@@ -127,6 +127,8 @@ public class KnifeText extends EditText implements TextWatcher {
 
     private void init(AttributeSet attrs) {
         //setLayerType(LAYER_TYPE_SOFTWARE, null);
+        mRect = new Rect();
+        mPaint = new Paint();
         glideRequests = GlideApp.with(this);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
@@ -228,12 +230,10 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void initLine() {
-        mRect = new Rect();
-        mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        clearLine();
         int lineColor = getLineColor();
         mPaint.setColor(lineColor);
-        clearLine();
     }
 
     private void clearLine() {
