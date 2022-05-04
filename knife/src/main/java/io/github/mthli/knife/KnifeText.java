@@ -127,8 +127,6 @@ public class KnifeText extends EditText implements TextWatcher {
 
     private void init(AttributeSet attrs) {
         //setLayerType(LAYER_TYPE_SOFTWARE, null);
-        mRect = new Rect();
-        mPaint = new Paint();
         glideRequests = GlideApp.with(this);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.KnifeText);
         bulletColor = array.getColor(R.styleable.KnifeText_bulletColor, 0);
@@ -172,35 +170,33 @@ public class KnifeText extends EditText implements TextWatcher {
     protected void onDraw(Canvas canvas) {
         this.canvas = canvas;
         if (isLine && canvas != null) {
-            getRootView().post(() -> {
-                int height = getHeight();
-                int line_height = getLineHeight();
+            int height = getHeight();
+            int line_height = getLineHeight();
 
-                int count = height / line_height;
+            int count = height / line_height;
 
-                if (getLineCount() > count)
-                    count = getLineCount();
+            if (getLineCount() > count)
+                count = getLineCount();
 
-                Rect r = mRect;
-                Paint paint = mPaint;
-                int baseline = getLineBounds(0, r);
+            Rect r = mRect;
+            Paint paint = mPaint;
+            int baseline = getLineBounds(0, r);
 
-                int left;
-                int right;
+            int left;
+            int right;
 
-                if (isLinePadding()) {
-                    left = r.left;
-                    right = r.right;
-                } else {
-                    left = getLeft();
-                    right = getRight();
-                }
+            if (isLinePadding()) {
+                left = r.left;
+                right = r.right;
+            } else {
+                left = getLeft();
+                right = getRight();
+            }
 
-                for (int i = 0; i < count; i++) {
-                    canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
-                    baseline += getLineHeight();
-                }
-            });
+            for (int i = 0; i < count; i++) {
+                canvas.drawLine(left, baseline + 1, right, baseline + 1, paint);
+                baseline += getLineHeight();
+            }
         } else {
             //clearLine();
         }
@@ -230,10 +226,11 @@ public class KnifeText extends EditText implements TextWatcher {
     }
 
     private void initLine() {
+        mRect = new Rect();
+        mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        mPaint.setColor(getLineColor());
         clearLine();
-        int lineColor = getLineColor();
-        mPaint.setColor(lineColor);
     }
 
     private void clearLine() {

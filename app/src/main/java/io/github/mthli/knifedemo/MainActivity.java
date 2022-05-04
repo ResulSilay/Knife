@@ -234,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements IPickResult {
         });
 
         line.setOnLongClickListener(v -> {
+            knife.setLine(false);
             Toast.makeText(MainActivity.this, R.string.toast_quote, Toast.LENGTH_SHORT).show();
             return true;
         });
